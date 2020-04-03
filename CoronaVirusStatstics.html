@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<link rel="stylesheet" type="text/css" href="style.css" />
+<title>Corona Virus</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+</head>
+<body>
+<canvas id="mixed-chart" width="800" height="450"></canvas>
+<script>
+ const xlabels=[];
+ const ytemps;
+ chartIt();
+ 
+ async function chartIt() {
+    await GetData();
+    const ctx = document.getElementById('chart').getContext
+    const myChart = new Chart(ct, {
+	type: 'bar',
+    data: {
+      labels: xlabels,
+      datasets: [{
+         label: 'Days",
+		 data : ytemps;
+        }
+      ]
+    },
+    options: {
+      title: {
+        display: true,
+        text: 'Population growth (millions): Europe & Africa'
+      },
+      legend: { display: false }
+    }
+	}
+);
+
+}
+
+async function get Data() {
+	const response = await fetch('covid_19_data.csv');
+	const data = await response.text();
+	
+	const table = data.split('\n').slice(1);
+	table.forEach(row => {
+		const columns.row.split(',");
+		const day = columns[1];
+		const month = columns[2];
+		const year = columns[3];
+		for(
+</script>
+
+</body>
+</html>
