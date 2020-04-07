@@ -7,53 +7,81 @@
       content="width=device-width, initial-scale=1.0"
     />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-<link rel="stylesheet" type="text/css" href="style.css" />
 <title>Corona Virus</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 </head>
 <body>
-<canvas id="mixed-chart" width="800" height="450"></canvas>
+<h2 align='center'>CoronaVirus cases in the United States March 2nd to April 2nd</h2>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+<canvas id="CoronaChartCases" width="800" height="450"></canvas>
+<canvas id="CoronaChartCTCases" width="800" height="450"></canvas>
+<canvas id="CoronaChartCTDeaths" width="800" height="450"></canvas>
 <script>
- const xlabels=[];
- const ytemps;
- chartIt();
- 
- async function chartIt() {
-    await GetData();
-    const ctx = document.getElementById('chart').getContext
-    const myChart = new Chart(ct, {
+var cases =[];
+var deaths = [];
+var days = 0;
+const xlabels=[1,2,3,4,5,6,7, 8,9, 10, 11, 12, 13, 14 , 15, 16, 17, 18, 19, 20, 21 , 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32];
+const ytemps=[53, 80, 98, 164, 214, 279, 423, 647, 937, 1215, 1629, 1896, 2234, 3487, 4226, 7038, 10442, 15219, 18747, 24583, 33404,	44183, 54453, 68440, 85356, 103321, 122653,	140904,	163539,	186101,	213144,	239279];
+chartIt();
+getData();
+chartItCases();
+chartItDeaths();
+
+function chartIt() {
+	var ctx = document.getElementById('CoronaChartCases').getContext('2d');
+	var myChart = new Chart(ctx, {
 	type: 'bar',
-    data: {
-      labels: xlabels,
-      datasets: [{
-         label: 'Days",
-		 data : ytemps;
-        }
-      ]
-    },
-    options: {
-      title: {
-        display: true,
-        text: 'Population growth (millions): Europe & Africa'
-      },
-      legend: { display: false }
-    }
-	}
-);
+	data: {
+    labels: xlabels,
+    datasets: [{
+      label: 'Cases',
+      data: ytemps,
+      backgroundColor: "rgba(153,255,51,0.4)"
+    }]
+  }
+});
+
+function chartItCTCases() {
+	var ctx = document.getElementById('CoronaChartCTCases').getContext('2d');
+	var myChart = new Chart(ctx, {
+	type: 'bar',
+	data: {
+    labels: days,
+    datasets: [{
+      label: 'Cases',
+      data: cases,
+      backgroundColor: "rgba(153,255,51,0.4)"
+    }]
+  }
+});
+
+function chartItCTDeaths() {
+	var ctx = document.getElementById('CoronaChartCTDeaths').getContext('2d');
+	var myChart = new Chart(ctx, {
+	type: 'bar',
+	data: {
+    labels: days,
+    datasets: [{
+      label: 'Cases',
+      data: deaths,
+      backgroundColor: "rgba(153,255,51,0.4)"
+    }]
+  }
+});
 
 }
 
-async function get Data() {
-	const response = await fetch('covid_19_data.csv');
-	const data = await response.text();
-	
+function getData() { 
+	const response = fetch('us-states.csv'); 
+	const data = response.text(); 
 	const table = data.split('\n').slice(1);
-	table.forEach(row => {
-		const columns.row.split(',");
-		const day = columns[1];
-		const month = columns[2];
-		const year = columns[3];
-		for(
+	table.foreach(row => { 
+		const columns.row.split(',"); 
+		if(columns[1]=='Connecticut')
+			cases = cases.push(columns[3]);
+			deaths = deaths.push(columns[4]);
+			days.push(days++);
+	}
+}	
 </script>
 
 </body>
