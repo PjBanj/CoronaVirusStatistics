@@ -1,6 +1,41 @@
 <!DOCTYPE html>
 <html>
 <head>
+<!-- <link rel="stylesheet" href="style.css"> -->
+<style>
+.inBlock {
+		display: inline-block;
+	}
+body {
+	 background-color: #FFFFFF;
+}
+#canvas-holder {
+        background-color: #FFFFFF;
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        right: 8px;
+        bottom: 8px;
+}
+
+.button {
+  display: inline-block;
+  padding: 15px 25px;
+  font-size: 24px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  outline: none;
+  color: #fff;
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 9px #999;
+}
+
+.button:hover {background-color: #3e8e41}
+</style>
+
 <meta charset="UTF-8" />
     <meta
       name="viewport"
@@ -12,33 +47,37 @@
 	
 <title>Corona Virus</title>
 
-<style>
-	.inBlock {
-		display:inline-block;
-	}
-</style>
-
 </head>
-<body>
+<body style = "background-color: rgb(190,190,190);">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.0.0/fetch.js"></script>
+
+<div class="container text-center">
+  <h2>Your State and Nationwide Breakdown of CoronvaVirus cases and deaths</h3>
+  <p><em>Updated Daily</em></p>
+</div>
+
 <div class = "container">
 	<div class="row">
-		<div class="col-xs-8">
-		<h2 align='center'>CoronaVirus cases in the United States March 2nd to April 2nd</h2>
-			<canvas id="CoronaChartCases" width="450" height="450"></canvas>
+		<div class="col-xs-12">
+			<h4 align="center">CoronaVirus cases in the United States March 2nd to April 2nd</h2>
+			<div style = "float:right;width:100%; height:75%"> 
+				<canvas id="CoronaChartCases"></canvas>
+			</div>
 		</div>
+		<!-- <div class="col-xs-2"> -->
+		
+		<!-- </div> -->
 	</div>
 </div>
-<div class = "container">
-	<div class="row">
-		<div class="col-xs-12" class="text-center">
-			<input class="col-xs-4" type="text" name="state" id="state"><br>
-			<button class="col-xs-4" onclick="chartStateCases(document.getElementById('state').value)">Show Graph for State</button>
-		</div>
-	</div>
-</div>	
+
+<div class="col-xs-12" style="display: flex; flex-direction: row; justify-content: center; align-items: center">
+	<label for="state" align="center">Enter State spelled exactly: </label>
+	<input align="center" style="margin: 20px; padding: 5px" type="text" name="state" id="state"><br></input>
+	<button class="button" align="center" style="margin: 20px; padding: 5px" onclick="chartStateCases(document.getElementById('state').value)">Display State Data</button>
+</div>
+
 <!-- <div class="container"> -->
   <!-- <div class="row"> -->
     <!-- <div class="col-xs-6" class="text-center"> -->
@@ -51,9 +90,14 @@
   <!-- <canvas id="canvas"></canvas> -->
 <!-- </div> -->
 
-<div class="col-xs-8" class="inBlock">
-	<canvas id="CoronaChartCTCases" width="450" height="450"></canvas>
-	<canvas id="CoronaChartCTDeaths" width="450" height="450"></canvas>
+<div class="col-xs-8" style="display: flex; flex-direction: row; justify-content: center; align-items: center">
+	<div class="chart-container" style="position: relative; height:40vh; width:80vw">
+		<canvas id="CoronaChartCTCases" style="padding: 10px"></canvas>
+	</div>
+	
+	<div class="chart-container" style="position: relative; height:40vh; width:80vw">
+		<canvas id="CoronaChartCTDeaths" style="padding: 10px"></canvas>
+	</div>
 </div> 
  
 <script>
@@ -83,7 +127,7 @@
 				datasets: [{
 				  label: 'Cases',
 				  data: ytemps,
-				  backgroundColor: "rgba(153,255,51,0.4)"
+				  backgroundColor: "rgb(0,0,139)"
 				}]
 			}
 		});
@@ -98,7 +142,7 @@
 				datasets: [{
 				  label: 'Cases',
 				  data: cases,
-				  backgroundColor: "rgba(153,255,51,0.4)"
+				  backgroundColor: "rgb(207,181,59)"
 				}]
 			}
 		});
@@ -113,7 +157,7 @@
 			datasets: [{
 			  label: 'Deaths',
 			  data: deaths,
-			  backgroundColor: "rgba(153,255,51,0.4)"
+			  backgroundColor: "rgb(207,181,59)"
 			}]
 		  }
 		});

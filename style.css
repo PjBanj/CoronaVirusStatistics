@@ -1,0 +1,16 @@
+.inBlock {
+		display: inline-block;
+	}
+
+body {
+	 background-color: rgb(93, 188, 210, 0.7)
+}
+
+#canvas-holder {
+        background-color: #FFFFFF;
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        right: 8px;
+        bottom: 8px;
+}
