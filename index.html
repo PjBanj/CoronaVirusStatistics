@@ -160,6 +160,7 @@ select{
 
 		<!-- <!-- style="display: flex; flex-direction: row; justify-content: center; align-items: center" --> 
 		<div class="col-xs-12" >
+			<h5 class="text-center">Total Cases and Deaths Per Day in the United States</h5>
 			<div style="height: 300px; width: 45%;display:inline-block;">
 				<canvas id="CoronaChartCountryCases"> </canvas> 
 			</div>
@@ -168,12 +169,20 @@ select{
 			</div>
 		</div> 
 
-
 			<!-- <div id="CoronaChartCountryCases" style="height: 360px; width: 45%;display:inline-block;"></div> -->
 			<!-- <div id="CoronaChartCountryDeaths" style="height: 360px; width: 45%;margin-left:5%;display:inline-block;"></div> -->
 
-
 		<div class = "row"> </div>
+
+		<div class="col-xs-12" >
+			<h5 class="text-center">New Cases and Deaths Per Day in the United States</h5>
+			<div style="height: 300px; width: 45%;display:inline-block;">
+				<canvas id="CoronaChartNewCountryCases"> </canvas> 
+			</div>
+			<div style="height: 300px; width: 45%;display:inline-block;"> 
+				<canvas id="CoronaChartNewCountryDeaths" ></canvas>
+			</div>
+		</div> 
 
 		<div class="col-xs-12" style="display: flex; flex-direction: row; justify-content: center; align-items: center">
 			<!-- <label for="state" align="center">Enter State spelled exactly: </label> -->
@@ -205,11 +214,22 @@ select{
 	<!-- </div>  -->
 
 			<div class="col-xs-12" >
+				<h5 class="text-center">Total Cases and Deaths Per Day in <span class='newState'>Alabama</span></h5>
 				<div style="height: 300px; width: 45%;display:inline-block;"></> 
-					<canvas id="CoronaChartCTCases"> </canvas> 
+					<canvas id="CoronaChartStateCases"> </canvas> 
 				</div>
 				<div style="height: 300px; width: 45%;display:inline-block;"> 
-					<canvas id="CoronaChartCTDeaths" ></canvas>
+					<canvas id="CoronaChartStateDeaths" ></canvas>
+				</div>
+			</div> 
+
+			<div class="col-xs-12" >
+				<h5 class="text-center">New Cases and Deaths Per Day in <span class='newState'>Alabama</span></h5>
+				<div style="height: 300px; width: 45%;display:inline-block;"></> 
+					<canvas id="CoronaChartNewStateCases"> </canvas> 
+				</div>
+				<div style="height: 300px; width: 45%;display:inline-block;"> 
+					<canvas id="CoronaChartNewStateDeaths" ></canvas>
 				</div>
 			</div> 
 	</main>
@@ -227,13 +247,13 @@ select{
 			</div>
 			
 			<div class = "sidePanel">
-				<h5>Total Cases in State: </h3>
+				<h5>Total Cases in <span class='newState'>Alabama</span>: </h3>
 				<p id = "casestate"> </p>
 				<!-- <p id = "state"> : </p> -->
 			</div>
 			
 			<div class = "sidePanel">
-				<h5>Total Deaths in State: </h3>
+				<h5>Total Deaths in <span class='newState'>Alabama</span>: </h3>
 				<p id = "deathstate"> </p>
 				<!-- <p id = "state"> : </p> -->
 			</div>
@@ -246,38 +266,43 @@ select{
 <script>
 	var cases = [];
 	var deaths = [];
+	var newCases=[];
+	var newDeaths=[];
 	var days = [];
 	var nationDays=[];
 	var nationCases=[];
+	var newNationCases=[];
 	var nationDeaths=[];
-	var countryCases=[];
-	var countryDeaths=[];
-	var countryDays=[];
-	var state = "Alabama";
+	var newNationDeaths=[];
+	var state = "New York";
 	var caseUSChart = null;
+	var newCaseUSChart = null;
 	var deathUSChart = null;
+	var newDeathUSChart = null;
 	var caseStateChart = null;
 	var deathStateChart = null;
+	var newCaseStateChart = null;
+	var newDeathStateChart = null;
 	
 	window.onload = function () {
-	displayCountryData();	
-	getData(state);
+		displayCountryData();	
+		getDisplayStateData(state);
 	}
 	
-	function loadSidePanel(){
+	function loadSidePanel(newState){
 		var casestate = cases[cases.length-1];
-		var deathstate = deaths[deaths.length-1];
-		document.getElementById('casestate').innerHTML = casestate; 
-		document.getElementById('deathstate').innerHTML = deathstate;  
+		var deathstate = deaths[deaths.length-1]; 
+		document.getElementsByClassName("newState")[0].innerHTML = newState; 
+		document.getElementsByClassName("newState")[1].innerHTML = newState; 
+		document.getElementsByClassName("newState")[2].innerHTML = newState;
+		document.getElementsByClassName("newState")[3].innerHTML = newState; 
     }
 	
-	
 	function chartStateCases(state) {
-		getData(state); 
+		getDisplayStateData(state); 
 	}
 	
-
-	function chartItCountryCases() {
+	function chartCountryCases() {
 		if(caseUSChart!=null){
         	caseUSChart.destroy();
     	}
@@ -289,7 +314,7 @@ select{
 				datasets: [{
 				  label: 'Cases',
 				  data: nationCases,
-				  backgroundColor: "rgb(0,0,139)"
+				  backgroundColor: "rgb(207,181,59)"
 				}]
 			},
 			options: {
@@ -325,7 +350,7 @@ select{
 		caseUSChart.render();
 	}
 	
-	function chartItCountryDeaths() {
+	function chartCountryDeaths() {
 		if(deathUSChart!=null){
         	deathUSChart.destroy();
     	}
@@ -338,6 +363,7 @@ select{
 				  label: 'Deaths',
 				  data: nationDeaths,
 				  backgroundColor: "rgb(0,0,139)"
+				 
 				}]
 			},
 			options: {
@@ -373,12 +399,107 @@ select{
 		deathUSChart.render();
 	}
 
-	function chartItCTCases(cases, days) {
-		
+	function chartNewCountryCases() {
+		if(newCaseUSChart!=null){
+        	newCaseUSChart.destroy();
+    	}
+		var ctx = document.getElementById('CoronaChartNewCountryCases').getContext('2d');
+		newCaseUSChart = new Chart(ctx, {
+			type: 'bar',
+			data: {
+				labels: nationDays,
+				datasets: [{
+				  label: 'New Cases per Day',
+				  data: newNationCases,
+				  backgroundColor: "rgb(207,181,59)"
+				}]
+			},
+			options: {
+				title: {
+					display: true,
+					text: 'New CoronaVirus cases per Day in the United States'
+				},
+				maintainAspectRatio: false,
+				responsive: true,
+				  scales: {
+					xAxes: [ {
+					ticks: {
+						autoSkip: true,
+						maxTicksLimit: 12
+					},
+					  display: true,
+					  scaleLabel: {
+						display: true,
+						labelString: 'Days since first case in the Country'
+					  },
+					} ],
+					yAxes: [ {
+					  display: true,
+					  scaleLabel: {
+						display: true,
+						labelString: 'New Cases per Day'
+						}
+							
+						} ]
+				    }
+			}
+		});
+		newCaseUSChart.render();
+	}
+
+	function chartNewCountryDeaths() {
+		if(newDeathUSChart!=null){
+        	newDeathUSChart.destroy();
+    	}
+		var ctx = document.getElementById('CoronaChartNewCountryDeaths').getContext('2d');
+		newDeathUSChart = new Chart(ctx, {
+			type: 'bar',
+			data: {
+				labels: nationDays,
+				datasets: [{
+				  label: 'New Deaths per day',
+				  data: newNationDeaths,
+				  backgroundColor: "rgb(0,0,139)"
+				}]
+			},
+			options: {
+				title: {
+					display: true,
+					text: 'New CoronaVirus Deaths in the United States'
+				},
+				maintainAspectRatio: false,
+				responsive: true,
+				  scales: {
+					xAxes: [ {
+					ticks: {
+						autoSkip: true,
+						maxTicksLimit: 12
+					},
+					  display: true,
+					  scaleLabel: {
+						display: true,
+						labelString: 'Days since first case in the Country'
+					  },
+					} ],
+					yAxes: [ {
+					  display: true,
+					  scaleLabel: {
+						display: true,
+						labelString: 'New Deaths per Day'
+						}
+							
+						} ]
+				    }
+			}
+		});
+		newDeathUSChart.render();
+	}
+	
+	function chartStateCases(cases, days) {
 		if(caseStateChart!=null){
         	caseStateChart.destroy();
     	}
-		var ctx = document.getElementById('CoronaChartCTCases').getContext('2d');
+		var ctx = document.getElementById('CoronaChartStateCases').getContext('2d');
 			caseStateChart = new Chart(ctx, {
 			type: 'bar',
 			data: {
@@ -415,18 +536,18 @@ select{
 						labelString: 'Total Cases in the state'
 					  }
 							} ]
-						}
+				}
 			}
 		});
 		
 		caseStateChart.render();
 	}
-
-	function chartItCTDeaths(deaths, days) {
+	
+	function chartStateDeaths(deaths, days) {
 		if(deathStateChart!=null){
         	deathStateChart.destroy();
     	}
-		var ctx = document.getElementById('CoronaChartCTDeaths').getContext('2d');
+		var ctx = document.getElementById('CoronaChartStateDeaths').getContext('2d');
 		deathStateChart = new Chart(ctx, {
 			type: 'bar',
 			data: {
@@ -434,7 +555,7 @@ select{
 			datasets: [{
 			  label: 'Deaths',
 			  data: deaths,
-			  backgroundColor: "rgb(207,181,59)"
+			  backgroundColor: "rgb(0,0,139)"
 			}]
 		  },
 		  options: {
@@ -469,10 +590,108 @@ select{
 		
 		deathStateChart.render();
 	}
+	
+	function chartNewStateCases(nCases, dayaxis) {
+		if(newCaseStateChart!=null){
+        	newCaseStateChart.destroy();
+    	}
+		var ctx = document.getElementById('CoronaChartNewStateCases').getContext('2d');
+		newCaseStateChart = new Chart(ctx, {
+			type: 'bar',
+			data: {
+				labels: dayaxis,
+				datasets: [{
+				  label: 'New Cases per Day',
+				  data: nCases,
+				  backgroundColor: "rgb(207,181,59)"
+				}]
+			},
+			options: {
+				title: {
+					display: true,
+					text: 'New CoronaVirus cases per Day in the State'
+				},
+				maintainAspectRatio: false,
+				responsive: true,
+				  scales: {
+					xAxes: [ {
+					ticks: {
+						autoSkip: true,
+						maxTicksLimit: 12
+					},
+					  display: true,
+					  scaleLabel: {
+						display: true,
+						labelString: 'Days since first case in the State'
+					  },
+					} ],
+					yAxes: [ {
+					  display: true,
+					  scaleLabel: {
+						display: true,
+						labelString: 'New Cases per Day'
+						}
+							
+						} ]
+				    }
+			}
+		});
+		newCaseStateChart.render();
+	}
 
-	function getData(state) { 
+	function chartNewStateDeaths(nDeaths, dayaxis) {
+		if(newDeathStateChart!=null){
+        	newDeathStateChart.destroy();
+    	}
+		var ctx = document.getElementById('CoronaChartNewStateDeaths').getContext('2d');
+		newDeathStateChart = new Chart(ctx, {
+			type: 'bar',
+			data: {
+				labels: dayaxis,
+				datasets: [{
+				  label: 'New Deaths per day',
+				  data: nDeaths,
+				  backgroundColor: "rgb(0,0,139)"
+				}]
+			},
+			options: {
+				title: {
+					display: true,
+					text: 'New CoronaVirus Deaths in the State'
+				},
+				maintainAspectRatio: false,
+				responsive: true,
+				  scales: {
+					xAxes: [ {
+					ticks: {
+						autoSkip: true,
+						maxTicksLimit: 12
+					},
+					  display: true,
+					  scaleLabel: {
+						display: true,
+						labelString: 'Days since first case in the State'
+					  },
+					} ],
+					yAxes: [ {
+					  display: true,
+					  scaleLabel: {
+						display: true,
+						labelString: 'New Deaths per Day'
+						}
+							
+						} ]
+				    }
+			}
+		});
+		newDeathStateChart.render();
+	}
+	
+	function getDisplayStateData(state) { 
 		cases = [];
 		deaths = [];
+		newStateCases=[];
+		newStateDeaths=[];
 		days = [];
 		fetch('https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv')
 		.then((response) => {
@@ -489,13 +708,17 @@ select{
 					days.push(curDay++);
 				}	
 			});
-			chartItCTCases(cases, days);
-			chartItCTDeaths(deaths, days);
-			loadSidePanel();
+	
+			chartStateCases(cases, days);
+			chartStateDeaths(deaths, days);
+			loadSidePanel(state);
+			populateNewStateStats(cases, deaths);
+			chartNewStateCases(newStateCases, days);
+			chartNewStateDeaths(newStateDeaths, days);
+			
 		})
-		
 	}
-
+	
 	function csvToArray(csvString) {
 
 		// The array we're going to build
@@ -525,7 +748,7 @@ select{
 		}
 
 		return csvArray;
-}
+	}
 	
 	function displayCountryData() {  
 
@@ -556,13 +779,61 @@ select{
 				nationDeaths.push(res[key].totalDeaths);
 				i++;
 			}
-			chartItCountryCases();
-			chartItCountryDeaths();
+			chartCountryCases();
+			chartCountryDeaths();
+			populateNewNationStats();
+			chartNewCountryCases();
+			chartNewCountryDeaths();
 			var caseus = nationCases[nationCases.length-1];
 			var deathus = nationDeaths[nationDeaths.length-1];
 			document.getElementById('caseus').innerHTML = caseus;
 			document.getElementById('deathus').innerHTML = deathus;
 		})
+	}
+
+	function populateNewNationStats()
+	{
+		var idx = 0;
+
+		for(var x in nationCases)
+		{
+			if(idx==0)
+			{
+				newNationCases.push(0);
+				newNationDeaths.push(0);
+			}
+			else
+			{
+				newNationCases.push(nationCases[idx] - nationCases[idx-1]);
+				newNationDeaths.push(nationDeaths[idx] - nationDeaths[idx-1]);
+			}
+
+			idx++;
+		}
+		
+		console.log(newNationCases);
+		console.log(newNationDeaths);
+	}
+
+	function populateNewStateStats(stateCases, stateDeaths)
+	{
+		var idx = 0;
+		
+		for(var x in stateCases)
+		{
+			if(idx==0)
+				{
+					newStateCases.push(0);
+					newStateDeaths.push(0);
+				}
+				else
+				{
+					newStateCases.push(stateCases[idx] - stateCases[idx-1]);
+					newStateDeaths.push(stateDeaths[idx] - stateDeaths[idx-1]);
+				}
+			idx++;
+		}
+
 	}
 		
 </script>
